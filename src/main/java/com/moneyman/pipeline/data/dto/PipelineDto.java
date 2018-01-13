@@ -2,14 +2,24 @@ package com.moneyman.pipeline.data.dto;
 
 import org.springframework.data.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PipelineDto {
 
+    private Long id;
     private String name;
     private String description;
-    private List<PipelineTaskDto> tasks;
-    private List<Pair<String, String>> transitions;
+    private List<PipelineTaskDto> tasks = new ArrayList<>();
+    private List<Pair<String, String>> transitions = new ArrayList<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

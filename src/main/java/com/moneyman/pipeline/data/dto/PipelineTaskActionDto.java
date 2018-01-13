@@ -2,13 +2,20 @@ package com.moneyman.pipeline.data.dto;
 
 public class PipelineTaskActionDto {
 
-    private ActionType type;
+    private String type;
 
-    public ActionType getType() {
+    public PipelineTaskActionDto() {
+    }
+
+    public PipelineTaskActionDto(String action) {
+        type = action;
+    }
+
+    public String getType() {
         return type;
     }
 
-    public void setType(ActionType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

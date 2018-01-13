@@ -17,7 +17,7 @@ public class PipelineController {
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity create(@RequestBody PipelineDto pipeline) {
         Long id = pipelineService.createPipeline(pipeline);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.POST)
@@ -28,8 +28,8 @@ public class PipelineController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity get(@PathVariable Long id) {
-        Pipeline pipeline = pipelineService.getPipeline(id);
-        return ResponseEntity.ok().build();
+        PipelineDto pipeline = pipelineService.getPipeline(id);
+        return ResponseEntity.ok(pipeline);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
