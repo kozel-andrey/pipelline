@@ -1,9 +1,8 @@
 package com.moneyman.pipeline.data.dto;
 
-import org.springframework.data.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PipelineDto {
 
@@ -11,7 +10,7 @@ public class PipelineDto {
     private String name;
     private String description;
     private List<PipelineTaskDto> tasks = new ArrayList<>();
-    private List<Pair<String, String>> transitions = new ArrayList<>();
+    private List<Map<String, String>> transitions = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -45,11 +44,11 @@ public class PipelineDto {
         this.tasks = tasks;
     }
 
-    public List<Pair<String, String>> getTransitions() {
+    public List<Map<String, String>> getTransitions() {
         return transitions;
     }
 
-    public void setTransitions(List<Pair<String, String>> transitions) {
+    public void setTransitions(List<Map<String, String>> transitions) {
         this.transitions = transitions;
     }
 }

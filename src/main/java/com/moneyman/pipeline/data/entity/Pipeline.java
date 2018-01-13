@@ -17,6 +17,17 @@ public class Pipeline extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pipeline")
     private List<PipelineTask> tasks = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pipeline")
+    private List<PipelineTransition> transitions = new ArrayList<>();
+
+    public List<PipelineTransition> getTransitions() {
+        return transitions;
+    }
+
+    public void setTransitions(List<PipelineTransition> transitions) {
+        this.transitions = transitions;
+    }
+
     public String getName() {
         return name;
     }

@@ -1,7 +1,6 @@
 package com.moneyman.pipeline.rest;
 
 import com.moneyman.pipeline.data.dto.PipelineDto;
-import com.moneyman.pipeline.data.entity.Pipeline;
 import com.moneyman.pipeline.services.PipelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

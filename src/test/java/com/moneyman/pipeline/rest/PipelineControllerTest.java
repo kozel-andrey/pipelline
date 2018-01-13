@@ -20,7 +20,6 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.transaction.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,9 +51,13 @@ public class PipelineControllerTest {
                 .content(getYamlPipeline())
                 .accept(MediaType.parseMediaType(APPLICATION_YAML_UTF_8)))
                 .andExpect(status().isOk());
+
         Assert.assertFalse(repository.findAll().isEmpty());
         Assert.assertEquals(repository.findAll().size(), 1);
 
+        Pipeline pipeline = repository.findAll().get(0);
+        Assert.assertEquals(pipeline.getTasks().size(), 3);
+        Assert.assertEquals(pipeline.getTransitions().size(), 2);
     }
 
     @Test
@@ -114,8 +117,37 @@ public class PipelineControllerTest {
 
     private String getYamlPipeline() {
         StringBuilder request = new StringBuilder();
+        request.append("---\n");
         request.append("name: name\n");
         request.append("description: description\n");
+        request.append("tasks:\n");
+
+        request.append("-\n");
+        request.append(" name: build\n");
+        request.append(" description: build\n");
+        request.append(" action:\n");
+        request.append("  type: random\n");
+
+        request.append("-\n");
+        request.append(" name: test\n");
+        request.append(" description: test\n");
+        request.append(" action:\n");
+        request.append("  type: print\n");
+
+        request.append("-\n");
+        request.append(" name: sync\n");
+        request.append(" description: sync\n");
+        request.append(" action:\n");
+        request.append("  type: print\n");
+
+        request.append("transitions:\n");
+
+        request.append("-\n");
+        request.append(" build: test\n");
+
+        request.append("-\n");
+        request.append(" test: sync\n");
+
         return request.toString();
     }
 

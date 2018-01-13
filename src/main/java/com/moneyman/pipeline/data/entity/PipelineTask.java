@@ -15,7 +15,7 @@ public class PipelineTask extends BaseEntity {
     @Column(name = "action")
     private String action;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pipeline_id")
     private Pipeline pipeline;
 
