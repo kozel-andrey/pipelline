@@ -15,7 +15,8 @@ public class ExecutionsController {
 
     @RequestMapping(value = "execute", method = RequestMethod.POST)
     public ResponseEntity execute(@RequestBody ExecutionRequest request) {
-        Long id = executionsService.execute(request.getPipelineName(), request.getContextName());
+        Long id = executionsService.initExecution(request.getPipelineName(), request.getContextName());
+        executionsService.execute(id);
         return ResponseEntity.ok(id);
     }
 

@@ -1,13 +1,26 @@
 package com.moneyman.pipeline.data.dto;
 
+import com.moneyman.pipeline.data.entity.ExecutionStatus;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class PipelineExecutionDto {
 
     private Long executionId;
     private String pipeline;
-    private String status;
+    private ExecutionStatus status;
     private Date startTime;
+    private List<PipelineTaskExecutionDto> tasks = new ArrayList<>();
+
+    public List<PipelineTaskExecutionDto> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<PipelineTaskExecutionDto> tasks) {
+        this.tasks = tasks;
+    }
 
     public Long getExecutionId() {
         return executionId;
@@ -25,11 +38,11 @@ public class PipelineExecutionDto {
         this.pipeline = pipeline;
     }
 
-    public String getStatus() {
+    public ExecutionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ExecutionStatus status) {
         this.status = status;
     }
 
