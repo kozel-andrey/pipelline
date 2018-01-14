@@ -38,7 +38,7 @@ public class ExecutionsService {
     private ActionExecutor actionExecutor;
 
     // What is the context name in task description?
-    @Transactional(Transactional.TxType.REQUIRED)
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public Long initExecution(String pipelineName, String contextName) {
         Pipeline pipeline = pipelineRepository.findByName(pipelineName);
         PipelineExecution execution = new PipelineExecution();
@@ -50,8 +50,8 @@ public class ExecutionsService {
         return execution.getId();
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    public void execute(Long id) {
+
+    public PipelineExecutionDto execute(Long id) {
         PipelineExecution execution = executionRepository.getOne(id);
         Pipeline pipeline = pipelineRepository.findByName(execution.getPipeline());
         execution.setStatus(ExecutionStatus.IN_PROGRESS);
@@ -59,24 +59,27 @@ public class ExecutionsService {
         LOG.info("Execution for pipeline: " + execution.getPipeline() + " is started");
         Map<String, Future<ExecutionStatus>> statuses = new HashMap<>();
         for (PipelineTaskExecution task : execution.getTasks()) {
-            if(executionRepository.isCancelled(execution.getId())) {
-                shutdownExecution(execution);
-                return;
-            }
-
-            try {
-                checkParentsCompleted(pipeline, task.getName(), statuses);
-                statuses.put(task.getName(), actionExecutor.execute(task));
-            } catch(ExecutionFailedException ex) {
-                failExecution(task, execution);
-                return;
-            }
+            Future<ExecutionStatus> executionResult = actionExecutor.execute(task, execution, pipeline, statuses);
+            statuses.put(task.getName(), executionResult);
         }
         checkIsCompleted(statuses);
         LOG.info("Execution for pipeline: " + execution.getPipeline() + " is completed");
         execution.setStatus(ExecutionStatus.COMPLETED);
         execution.setEndTime(new Date());
         executionRepository.save(execution);
+        return executionMapper.toDto(execution);
+    }
+
+    public PipelineExecutionDto markToShutdown(Long id) {
+        PipelineExecution execution = executionRepository.getOne(id);
+        execution.setCanceled(true);
+        executionRepository.save(execution);
+        return executionMapper.toDto(execution);
+    }
+
+    public PipelineExecutionDto getState(Long id) {
+        PipelineExecution execution = executionRepository.getOne(id);
+        return executionMapper.toDto(execution);
     }
 
     private void checkIsCompleted(Map<String, Future<ExecutionStatus>> statuses) {
@@ -89,53 +92,13 @@ public class ExecutionsService {
         });
     }
 
-    private void checkParentsCompleted(Pipeline pipeline, String task, Map<String, Future<ExecutionStatus>> statuses) {
-        try {
-            List<String> parents = pipeline.getParents(task);
-            for (String parent : parents) {
-                Future<ExecutionStatus> future = statuses.get(parent);
-                ExecutionStatus status = future.get();
-                if(status == ExecutionStatus.FAILED) {
-                    throw new ExecutionFailedException(parent);
-                }
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void markToShutdown(Long id) {
-        PipelineExecution execution = executionRepository.getOne(id);
-        execution.setCanceled(true);
-        executionRepository.save(execution);
-    }
-
-    public PipelineExecutionDto getState(Long id) {
-        PipelineExecution execution = executionRepository.getOne(id);
-        return executionMapper.toDto(execution);
-    }
-
     private void createPipelineExecutions(PipelineTask task, PipelineExecution execution) {
         PipelineTaskExecution taskExecution = new PipelineTaskExecution();
         taskExecution.setName(task.getName());
-        taskExecution.setStatus(ExecutionStatus.PENDING);
+        taskExecution.setStatus(ExecutionStatus.CANCELED);
         taskExecution.setExecution(execution);
         taskExecution.setAction(task.getAction());
         execution.addTask(taskExecution);
-    }
-
-    private void failExecution(PipelineTaskExecution task, PipelineExecution execution) {
-        LOG.info("Execution for pipeline: " + execution.getPipeline() + " is failed");
-        execution.setEndTime(new Date());
-        execution.setStatus(ExecutionStatus.FAILED);
-        executionRepository.save(execution);
-    }
-
-    private void shutdownExecution(PipelineExecution execution) {
-        LOG.info("Execution for pipeline: " + execution.getPipeline() + " is cancelled");
-        execution.setStatus(ExecutionStatus.SKIPPED);
-        execution.setEndTime(new Date());
-        executionRepository.save(execution);
     }
 
 }

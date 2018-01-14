@@ -6,6 +6,7 @@ public enum ExecutionStatus {
     COMPLETED,
     SKIPPED,
     FAILED,
-    PENDING
+    PENDING,
+    CANCELED
 
 }

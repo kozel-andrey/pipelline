@@ -55,9 +55,11 @@ public class Pipeline extends BaseEntity {
     }
 
     public List<String> getParents(String name) {
-        return transitions.stream()
-                .filter(t -> t.getNextTask().equals(name))
-                .map(PipelineTransition::getTask)
-                .collect(Collectors.toList());
+        List<String> parents = new ArrayList<>();
+        for (PipelineTransition transition : transitions) {
+            if(name.equals(transition.getNextTask())) parents.add(transition.getTask());
+
+        }
+        return parents;
     }
 }
