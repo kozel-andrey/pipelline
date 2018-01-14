@@ -99,7 +99,7 @@ public class ExecutionControllerTest {
         pipeline.getTasks().add(new PipelineTask("Test", "Test", "Print", pipeline));
         pipeline.getTasks().add(new PipelineTask("Docs", "Docs", "Delayed", pipeline));
         pipeline.getTasks().add(new PipelineTask("Integration tests", "Integration tests", "Completed", pipeline));
-        pipeline.getTasks().add(new PipelineTask("Publish", "Publish", "Delayed", pipeline));
+        pipeline.getTasks().add(new PipelineTask("Publish", "Publish", "Print", pipeline));
         pipeline.getTasks().add(new PipelineTask("Sync", "Sync", "Completed", pipeline));
         pipeline.getTransitions().add(new PipelineTransition("Build", "Test", pipeline));
         pipeline.getTransitions().add(new PipelineTransition("Test", "Docs", pipeline));

@@ -5,18 +5,15 @@ import com.moneyman.pipeline.data.dao.PipelineRepository;
 import com.moneyman.pipeline.data.dto.PipelineExecutionDto;
 import com.moneyman.pipeline.data.entity.*;
 import com.moneyman.pipeline.data.mapper.PipelineExecutionMapper;
-import com.moneyman.pipeline.exceptions.ExecutionFailedException;
 import com.moneyman.pipeline.services.actions.ActionExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

@@ -2,6 +2,7 @@ package com.moneyman.pipeline.data.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class Pipeline extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "pipeline")
     private List<PipelineTask> tasks = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "pipeline")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "pipeline")
     private List<PipelineTransition> transitions = new ArrayList<>();
 
     public List<PipelineTransition> getTransitions() {
@@ -56,9 +57,11 @@ public class Pipeline extends BaseEntity {
 
     public List<String> getParents(String name) {
         List<String> parents = new ArrayList<>();
-        for (PipelineTransition transition : transitions) {
-            if(name.equals(transition.getNextTask())) parents.add(transition.getTask());
+        synchronized (transitions) {
+            for (PipelineTransition transition : transitions) {
+                if(transition.getNextTask().equals(name)) parents.add(transition.getTask());
 
+            }
         }
         return parents;
     }
