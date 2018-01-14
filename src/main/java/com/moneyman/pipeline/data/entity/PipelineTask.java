@@ -19,6 +19,16 @@ public class PipelineTask extends BaseEntity {
     @JoinColumn(name = "pipeline_id")
     private Pipeline pipeline;
 
+    public PipelineTask(String name, String description, String action, Pipeline pipeline) {
+        this.name = name;
+        this.description = description;
+        this.action = action;
+        this.pipeline = pipeline;
+    }
+
+    public PipelineTask() {
+    }
+
     public String getAction() {
         return action;
     }

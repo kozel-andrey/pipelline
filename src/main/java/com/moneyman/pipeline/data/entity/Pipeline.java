@@ -54,16 +54,10 @@ public class Pipeline extends BaseEntity {
         this.tasks = tasks;
     }
 
-    public PipelineTask getFirstTask() {
-        if(tasks.isEmpty()) return null;
-
-        return tasks.get(0);
-    }
-
-    public List<PipelineTask> findNextTasks(PipelineTask task) {
-        List<String> nextTasks = transitions.stream().filter(tr -> tr.getTask().equals(task.getName()))
-                .map(PipelineTransition::getNextTask).collect(Collectors.toList());
-
-        return tasks.stream().filter(t -> nextTasks.contains(t.getName())).collect(Collectors.toList());
+    public List<String> getParents(String name) {
+        return transitions.stream()
+                .filter(t -> t.getNextTask().equals(name))
+                .map(PipelineTransition::getTask)
+                .collect(Collectors.toList());
     }
 }

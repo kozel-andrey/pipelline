@@ -20,7 +20,6 @@ public class PipelineTaskExecution extends BaseEntity {
     @Column(name = "action")
     private String action;
 
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_time")
     private Date startTime;

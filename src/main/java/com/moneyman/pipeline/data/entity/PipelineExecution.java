@@ -17,14 +17,27 @@ public class PipelineExecution extends BaseEntity {
     @Column(name = "status")
     private ExecutionStatus status;
 
-    @Column(name = "start_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_time")
     private Date startTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_time")
+    private Date endTime;
 
     @Column(name = "is_canceled")
     private boolean canceled = false;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "execution")
     private List<PipelineTaskExecution> tasks = new ArrayList<>();
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
     public boolean isCanceled() {
         return canceled;
@@ -67,4 +80,7 @@ public class PipelineExecution extends BaseEntity {
     }
 
 
+    public void addTask(PipelineTaskExecution task) {
+        tasks.add(task);
+    }
 }

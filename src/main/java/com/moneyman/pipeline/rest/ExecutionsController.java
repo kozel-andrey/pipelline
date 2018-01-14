@@ -28,7 +28,7 @@ public class ExecutionsController {
 
     @RequestMapping(value = "{id}/shutdown")
     public ResponseEntity shutdown(@PathVariable Long id) {
-        executionsService.shutdown(id);
+        executionsService.markToShutdown(id);
         return ResponseEntity.ok().build();
     }
 

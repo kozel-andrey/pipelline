@@ -3,9 +3,7 @@ package com.moneyman.pipeline.rest;
 import com.moneyman.pipeline.PipelineApplication;
 import com.moneyman.pipeline.data.dao.PipelineExecutionRepository;
 import com.moneyman.pipeline.data.dao.PipelineRepository;
-import com.moneyman.pipeline.data.entity.ExecutionStatus;
-import com.moneyman.pipeline.data.entity.Pipeline;
-import com.moneyman.pipeline.data.entity.PipelineExecution;
+import com.moneyman.pipeline.data.entity.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,6 +96,19 @@ public class ExecutionControllerTest {
         Pipeline pipeline = new Pipeline();
         pipeline.setName("some name");
         pipeline.setDescription("some description");
+        pipeline.getTasks().add(new PipelineTask("Build", "Build", "Completed", pipeline));
+        pipeline.getTasks().add(new PipelineTask("Test", "Test", "Print", pipeline));
+        pipeline.getTasks().add(new PipelineTask("Docs", "Docs", "Delayed", pipeline));
+        pipeline.getTasks().add(new PipelineTask("Integration tests", "Integration tests", "Completed", pipeline));
+        pipeline.getTasks().add(new PipelineTask("Publish", "Publish", "Delayed", pipeline));
+        pipeline.getTasks().add(new PipelineTask("Sync", "Sync", "Completed", pipeline));
+        pipeline.getTransitions().add(new PipelineTransition("Build", "Test", pipeline));
+        pipeline.getTransitions().add(new PipelineTransition("Test", "Docs", pipeline));
+        pipeline.getTransitions().add(new PipelineTransition("Test", "Integration tests", pipeline));
+        pipeline.getTransitions().add(new PipelineTransition("Integration tests", "Publish", pipeline));
+        pipeline.getTransitions().add(new PipelineTransition("Publish", "Sync", pipeline));
+        pipeline.getTransitions().add(new PipelineTransition("Docs", "Sync", pipeline));
+
         pipelineRepository.save(pipeline);
         return pipeline;
     }
