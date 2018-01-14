@@ -67,6 +67,7 @@ public class ExecutionsService {
         return executionMapper.toDto(execution);
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public PipelineExecutionDto markToShutdown(Long id) {
         PipelineExecution execution = executionRepository.getOne(id);
         execution.setCanceled(true);

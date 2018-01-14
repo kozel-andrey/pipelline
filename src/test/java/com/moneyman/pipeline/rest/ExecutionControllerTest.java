@@ -80,8 +80,7 @@ public class ExecutionControllerTest {
                 .accept(MediaType.parseMediaType(APPLICATION_YAML_UTF_8)))
                 .andExpect(status().isOk());
 
-        PipelineExecution changedExecution = executionRepository.getOne(execution.getId());
-        Assert.assertTrue(changedExecution.isCanceled());
+        Assert.assertTrue(executionRepository.isCancelled(execution.getId()));
     }
 
     public String getExecuteRequest() {
